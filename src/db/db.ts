@@ -25,7 +25,7 @@ const initPool = async(dbConfig) => {
                 // homogeneous: true, // all connections in the pool have the same credentials
                 // poolAlias: 'default', // set an alias to allow access to the pool via a name.
                 // poolIncrement: 1, // only grow the pool by one connection at a time
-                // poolMax: 4, // maximum size of the pool. Increase UV_THREADPOOL_SIZE if you increase poolMax
+                 //poolMax: 4, // maximum size of the pool. Increase UV_THREADPOOL_SIZE if you increase poolMax
                 // poolMin: 0, // start with no connections; let the pool shrink completely
                 // poolPingInterval: 60, // check aliveness of connection if idle in the pool for 60 seconds
                 // poolTimeout: 60, // terminate connections that are idle in the pool for 60 seconds

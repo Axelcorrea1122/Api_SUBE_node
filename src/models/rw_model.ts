@@ -2,13 +2,13 @@ import formatearJson from '../Utils/utils';
 import CardSector from '../interfaces/card_sector';
 import oracledb from 'oracledb';
 
-class RoClass extends CardSector{
+class RwClass extends CardSector{
 
     constructor(data) {
         super();
-        CardSector.DbObjectName = 'RO%ROWTYPE';
+        CardSector.DbObjectName = 'RW%ROWTYPE';
         CardSector.Obj = data;
-        CardSector.DbFunctionName = 'EXISTS_OR_CREATES_RO';
+        CardSector.DbFunctionName = 'EXISTS_OR_CREATES_RW';
     }
 
 
@@ -24,4 +24,4 @@ class RoClass extends CardSector{
 }
 
 
-export default RoClass;
+export default RwClass;

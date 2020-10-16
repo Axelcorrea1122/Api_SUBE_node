@@ -1,21 +1,33 @@
-import oracledb from 'oracledb';
+import oracledb, { Results } from 'oracledb';
+import formatearJson from '../Utils/utils';
+import { DBObject_IN } from 'oracledb';
 
 abstract class CardSector {
-    static proto: oracledb.DBObjectClass<unknown>;
-    static conn: oracledb.Connection;
-    static Obj: oracledb.DBObject_IN<unknown>;
-    static DbObjetName: String;
+    
+    static Obj: any
+    static DbObjectName: String;
     static DbFunctionName: String;
 
     constructor(){};
 
-    static async initialize(obj):Promise<void>{
-        CardSector.conn = await oracledb.getConnection(`subePool_${process.pid}`);
-        CardSector.proto = await CardSector.conn.getDbObjectClass(obj);
-    }
+    static async get_instance(objName, data, conn){
+            try{
+                //let conn = await oracledb.getConnection(`subePool_${process.pid}`);
+                CardSector.DbObjectName = objName;
+                let instance = await conn.getDbObjectClass(objName);
+                data = formatearJson(data, instance);
+                let Obj = new instance(data);
+                //await conn.close();
+                return Obj;
+            }catch(err){
+                console.log(err);
+                throw err;
+            }
+        }
+        
 
     private findDbFunctionName():void {
-        switch(CardSector.DbObjetName){
+        switch(CardSector.DbObjectName){
             case 'ORG%ROWTYPE': {
                 CardSector.DbFunctionName = 'EXISTS_OR_CREATES_ORG';
                 break;
@@ -24,7 +36,7 @@ abstract class CardSector {
                 CardSector.DbFunctionName = 'EXISTS_OR_CREATES_BKP';
                 break;
             }
-            case 'DEFERRED_REC': {
+            case 'TARJETA_PACKAGE.DEFERRED_REC': {
                 CardSector.DbFunctionName = 'EXISTS_OR_CREATES_DEFERRED';
                 break;
             }
@@ -100,30 +112,32 @@ abstract class CardSector {
         }
     }
 
-    public async save(): Promise<Boolean>{
-        try {
+    public abstract async save():Promise<Number>;
 
-            await CardSector.initialize(CardSector.DbObjetName);
-            this.findDbFunctionName();
-            let sql: string = `BEGIN :res := TARJETA_PACKAGE.${CardSector.DbFunctionName}(:obj); COMMIT; END;`;
+    public async saveSector(){
+        try {
+            let conn = await oracledb.getConnection(`subePool_${process.pid}`);
+            let db_obj_in = await CardSector.get_instance(CardSector.DbObjectName, 
+                                                        CardSector.Obj, conn);
+            let sql: string = `BEGIN :res := TARJETA_PACKAGE.${CardSector.DbFunctionName}
+                                (:obj); COMMIT; END;`;
 
             const binds: oracledb.BindParameters = {
                 res: {
                     type: oracledb.NUMBER,
                     dir: oracledb.BIND_OUT
                 },
-                obj: CardSector.Obj
+                obj: db_obj_in
             }
-            let result: oracledb.Result<unknown> = await CardSector.conn.execute(sql, binds);
-            
+            let result: oracledb.Result<any> = await conn.execute(sql, binds);
             console.log(result);
-            return true;
-
+            await conn.close();
+            return result.outBinds.res
         }catch (err) {
             console.error(err);
             throw err;
         }
-    };
+    }
 }
 
 

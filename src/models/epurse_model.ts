@@ -17,20 +17,8 @@ import CardSector from '../interfaces/card_sector';
 
 
 class EPurseClass extends CardSector {
-
-    constructor(data) {
-        super();
-        CardSector.DbObjetName = 'EPURSE%ROWTYPE';
-        CardSector.initialize(CardSector.DbObjetName).then( () => {
-            data = formatearJson(data, Object.keys(CardSector.proto.prototype.attributes));
-            let instance = CardSector.proto;
-            CardSector.Obj = new instance(data);
-
-        }).catch( err =>{
-            console.log(err)
-            throw err;
-        });
-
+    public async save(){
+        return 1;
     }
 
 }

@@ -20,7 +20,7 @@ app.use('/tarjetas', loginRoute);
 app.use('/tarjetas', usuariosRoute);
 
 
-if (cluster.isMaster) {
+if (cluster.isMaster) {      
     console.log("this is the master process:", process.pid);
     for (let i: number = 0; i < numCPUs; i++) {
         cluster.fork();

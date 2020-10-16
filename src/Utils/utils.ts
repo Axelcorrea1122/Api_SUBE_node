@@ -1,4 +1,5 @@
-const formatearJson = (json, keys) => {
+const formatearJson = (json, obj) => {
+    let keys = Object.keys(obj.prototype.attributes)
     let jsonFormateado = {};
     let i = 1;
     jsonFormateado['ID'] = null;
@@ -9,8 +10,5 @@ const formatearJson = (json, keys) => {
     return jsonFormateado;
 };
 
-const recorrerJson = (json: JSON, keys: Array<any>) => {
-    
-}
 
 export default formatearJson;
