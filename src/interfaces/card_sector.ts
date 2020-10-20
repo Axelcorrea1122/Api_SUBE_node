@@ -112,7 +112,7 @@ abstract class CardSector {
         }
     }
 
-    public abstract async save():Promise<Number>;
+    public abstract async save():Promise<Object>;
 
     public async saveSector(){
         try {
@@ -131,8 +131,9 @@ abstract class CardSector {
             }
             let result: oracledb.Result<any> = await conn.execute(sql, binds);
             console.log(result);
+            CardSector.Obj.ID = result.outBinds.res;
             await conn.close();
-            return result.outBinds.res
+            return CardSector.Obj;
         }catch (err) {
             console.error(err);
             throw err;

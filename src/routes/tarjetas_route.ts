@@ -11,20 +11,22 @@ import DeferredClass from '../models/deferred_model';
 import RoClass from '../models/ro_model';
 import RwClass from '../models/rw_model';
 import AppClass from '../models/app_model';
+import IdxAppClass from '../models/idx_app_model';
+import IntegrationClass from '../models/integration_model';
+import LastUseClass from '../models/last_use_model';
 
 
 
 router.put('/', verificaToken, parserXML, async(req, res) => {
         
         try{
-            let deferred_json: JSON = req.body.TarjetaM2.Deferred;
-            console.log("Termine json")
-            let deferredObj = new DeferredClass(deferred_json);
+            let app_json: JSON = req.body.TarjetaM2.App1;
+            console.log("Termine json");
+            let appObj = new AppClass(app_json);
             console.log("Termine creacion obj");
-            let result = await deferredObj.save();
+            let result = await appObj.save();
             console.log("termine de guardar");
             console.log(result);
-    
         }catch(err){
             console.log(err);
             return res.json({
@@ -36,7 +38,6 @@ router.put('/', verificaToken, parserXML, async(req, res) => {
         return res.json({
             ok: true,
             status: 200,
-
     })
     
     /* let epurse_json: JSON = req.body.TarjetaM2.ePurse;

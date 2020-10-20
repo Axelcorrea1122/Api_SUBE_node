@@ -20,25 +20,22 @@ class DeferredClass extends CardSector{
     public async save(){
         try {
 
-            let obj_def = {
-                DbOjectName: CardSector.DbObjectName,
-                Obj: CardSector.Obj,
-                DbFunctionName: CardSector.DbFunctionName
-            }
+            let obj = {...CardSector.Obj}
 
-            let obj_org = new OrgClass(obj_def.Obj.ORG);
-            let r1 = await obj_org.save();
-            let obj_bkp = new BkpClass(obj_def.Obj.BKP);
-            let r2 = await obj_bkp.save();
+            let obj_org = new OrgClass(obj.ORG);
+            let r1: any = await obj_org.save();
+            let obj_bkp = new BkpClass(obj.BKP);
+            let r2: any = await obj_bkp.save();
 
-            obj_def.Obj.ORG = r1;
-            obj_def.Obj.BKP = r2;
-            CardSector.Obj = obj_def.Obj;
+            CardSector.Obj = obj;
+            CardSector.Obj.ORG = r1.ID;
+            CardSector.Obj.BKP = r2.ID;
             CardSector.DbObjectName = 'TARJETA_PACKAGE.DEFERRED_REC';
             CardSector.DbFunctionName = 'EXISTS_OR_CREATES_DEFERRED';
-            
-            let res = this.saveSector();
 
+            let res = await this.saveSector();
+            res.ORG = r1;
+            res.BKP = r2;
             return res;
 
         }catch (err) {

@@ -17,32 +17,28 @@ class AppClass extends CardSector{
     public async save(){
         try {
 
-            let obj_app = {
-                DbOjectName: CardSector.DbObjectName,
-                Obj: CardSector.Obj,
-                DbFunctionName: CardSector.DbFunctionName
-            }
+            let obj = {...CardSector.Obj};
 
-            let obj_ro = new RoClass(obj_app.Obj.RO);
-            let r1 = await obj_ro.save();
-            let obj_rw = new RwClass(obj_app.Obj.RW);
-            let r2 = await obj_rw.save();
+            let obj_ro = new RoClass(obj.RO);
+            let r1: any = await obj_ro.save();
+            let obj_rw = new RwClass(obj.RW);
+            let r2: any = await obj_rw.save();
 
-            obj_app.Obj.RO = r1;
-            obj_app.Obj.RW = r2;
-            CardSector.Obj = {...obj_app};
+            CardSector.Obj = obj;
+            CardSector.Obj.RO = r1.ID;
+            CardSector.Obj.RW = r2.ID;
             CardSector.DbObjectName = 'TARJETA_PACKAGE.APP_REC';
             CardSector.DbFunctionName = 'EXISTS_OR_CREATES_APP';
             
-            let res = this.saveSector();
-
+            let res = await this.saveSector();
+            res.RO = r1;
+            res.RW = r2;
             return res;
         }catch (err) {
             console.error(err);
             throw err;
         }
     }
-
 }
 
 

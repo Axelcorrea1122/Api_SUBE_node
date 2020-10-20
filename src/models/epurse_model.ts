@@ -17,8 +17,21 @@ import CardSector from '../interfaces/card_sector';
 
 
 class EPurseClass extends CardSector {
+    constructor(data) {
+        super();
+        CardSector.DbObjectName = 'EPURSE%ROWTYPE';
+        CardSector.Obj = data;
+        CardSector.DbFunctionName = 'EXISTS_OR_CREATES_EPURSE';
+    }
+
     public async save(){
-        return 1;
+        try {
+            let res = await this.saveSector();
+            return res;
+        }catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
 
 }
